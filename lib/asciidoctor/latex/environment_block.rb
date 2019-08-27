@@ -187,8 +187,8 @@ module Asciidoctor::LaTeX
         #     -- @jxxcarlson
         #
 
-        # block = create_block parent, :environment, reader.lines, attrs, content_model: :compound
-        block = create_block parent, :environment, reader.lines, attrs
+        block = create_block parent, :environment, reader.lines, attrs, content_model: :compound
+        # block = create_block parent, :environment, reader.lines, attrs
       end
 
       if attrs['options'] =~ /numbered/
