@@ -50,6 +50,11 @@ module Asciidoctor::LaTeX
         if line.include? '\\' and document.basebackend? 'html'
           line = line.gsub '\\$', 'ESCDOLLAR'
         end
+
+        if line.include? '\\\\' and document.basebackend? 'tex'
+          line = line.gsub '\\\\', 'DOUBLEBACKSLASH'
+        end
+
         # It is important the previous transformation
         # come before the next one
         if line.include? '$'
