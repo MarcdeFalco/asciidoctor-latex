@@ -175,11 +175,11 @@ module Asciidoctor::LaTeX
   # template by @mojavelinux
   module Html5ConverterExtensions
 
-    ENV_CSS_OBLIQUE = "+++<div class='click_oblique'>+++"
-    ENV_CSS_PLAIN = "+++<div class='click_plain'>+++"
+    ENV_CSS_OBLIQUE = "<div class='click_oblique'>"
+    ENV_CSS_PLAIN = "<div class='click_plain'>"
 
-    DIV_END = '+++</div>+++'
-    TABLE_ROW_END = '+++</tr></table>+++'
+    DIV_END = '</div>'
+    TABLE_ROW_END = '</tr></table>'
 
     def info node
 
@@ -259,7 +259,8 @@ module Asciidoctor::LaTeX
 
     def handle_texmacro node
       node.title = nil
-      node.lines = ["+++\n\\("] + node.lines + ["\\)\n+++"]
+      node.content_model = :simple
+      node.lines = ["\\("] + node.lines + ["\\)\n"]
     end
 
     # Example:
@@ -349,16 +350,17 @@ module Asciidoctor::LaTeX
     def handle_equation(node)
       attrs = node.attributes
       options = attrs['options']
+      node.content_model = :simple
       node.title = nil
       number_part = '<td class="equation_number_style">' + "(#{node.caption}) </td>"
-      number_part = ["+++ #{number_part} +++"]
-      equation_part = ['+++<td class="equation_content_style";>+++'] + ['\\['] + node.lines + ['\\]'] + ['+++</td>+++']
+      number_part = [" #{number_part} "]
+      equation_part = ['<td class="equation_content_style";>'] + ['\\['] + node.lines + ['\\]'] + ['</td>']
       table_style='class="equation_table_style"'
       row_style='class="equation_row_style"'
       if options.include? 'numbered'
-        node.lines =  ["+++<table #{table_style}><tr #{row_style}>+++"] + equation_part + number_part + [TABLE_ROW_END]
+        node.lines =  ["<table #{table_style}><tr #{row_style}>"] + equation_part + number_part + [TABLE_ROW_END]
       else
-        node.lines =  ["+++<table #{table_style}><tr #{row_style}>+++"] + equation_part + [TABLE_ROW_END]
+        node.lines =  ["<table #{table_style}><tr #{row_style}>"] + equation_part + [TABLE_ROW_END]
       end
     end
 
@@ -366,6 +368,7 @@ module Asciidoctor::LaTeX
       attrs = node.attributes
       options = attrs['options']
       node.title = nil
+      node.content_model = :simple
       number_part = '<td class="equation_number_style">' + "(#{node.caption}) </td>"
       equation_part = ['<td class="equation_content_style";>'] + ['\\['] + node.lines + ['\\]'] + ['</td>']
       table_style='class="equation_table_style"'
@@ -381,15 +384,16 @@ module Asciidoctor::LaTeX
       attrs = node.attributes
       options = attrs['options']
       node.title = nil
+      node.content_model = :simple
       number_part = '<td class="equation_number_style">' + "(#{node.caption}) </td>"
-      number_part = ["+++ #{number_part} +++"]
-      equation_part = ['+++<td class="equation_content_style";>+++'] + ['\\[\\begin{aligned}'] + node.lines + ['\\end{aligned}\\]'] + ['+++</td>+++']
+      number_part = [" #{number_part} "]
+      equation_part = ['<td class="equation_content_style";>'] + ['\\[\\begin{aligned}'] + node.lines + ['\\end{aligned}\\]'] + ['</td>']
       table_style='class="equation_table_style" '
       row_style='class="equation_row_style"'
       if options.include? 'numbered'
-        node.lines =  ["+++<table #{table_style}><tr #{row_style}>+++"] + equation_part + number_part + [TABLE_ROW_END]
+        node.lines =  ["<table #{table_style}><tr #{row_style}>"] + equation_part + number_part + [TABLE_ROW_END]
       else
-        node.lines =  ["+++<table #{table_style}><tr #{row_style}>+++"] + equation_part + [TABLE_ROW_END]
+        node.lines =  ["<table #{table_style}><tr #{row_style}>"] + equation_part + [TABLE_ROW_END]
       end
     end
 
@@ -397,6 +401,7 @@ module Asciidoctor::LaTeX
       attrs = node.attributes
       options = attrs['options']
       node.title = nil
+      node.content_model = :simple
       number_part = '<td class="equation_number_style">' + "(#{node.caption}) </td>"
       number_part = ["#{number_part}"]
       equation_part = ['<td class="equation_content_style";>'] + ['\\[\\begin{split}'] + node.lines + ['\\end{split}\\]'] + ['</td>']
@@ -416,12 +421,13 @@ module Asciidoctor::LaTeX
 
     def handle_chem(node)
       node.title = nil
+      node.content_model = :simple
       number_part = '<td class="equation_number_style">' + "(#{node.caption}) </td>"
-      number_part = ["+++ #{number_part} +++"]
-      equation_part = ['+++<td class="equation_content_style">+++'] + [' \\[\\ce{' + node.lines[0] + '}\\] '] + ['+++</td>+++']
+      number_part = [" #{number_part} "]
+      equation_part = ['<td class="equation_content_style">'] + [' \\[\\ce{' + node.lines[0] + '}\\] '] + ['</td>']
       table_style='class="equation_table_style"'
       row_style='class="equation_row_style"'
-      node.lines =  ["+++<table #{table_style}><tr #{row_style}>+++"]  + equation_part + number_part +['+++</tr></table>+++']
+      node.lines =  ["<table #{table_style}><tr #{row_style}>"]  + equation_part + number_part +['</tr></table>']
     end
 
     def handle_jsxgraph(node)
@@ -435,7 +441,7 @@ module Asciidoctor::LaTeX
       if attrs['height'] == nil
         attrs['height'] = 450
       end
-      line_array = ["\n+++\n"]
+      line_array = ["\n"]
       # line_array += ["<link rel='stylesheet' type='text/css'  href='jsxgraph.css' />"]
 
       line_array += ["<link rel='stylesheet' type='text/css'  href='http://jsxgraph.uni-bayreuth.de/distrib/jsxgraph.css' />"]
@@ -447,7 +453,7 @@ module Asciidoctor::LaTeX
       line_array += node.lines
       line_array += ['</script>']
       line_array += ['<br/>']
-      line_array += ["\n+++\n"]
+      line_array += ["\n"]
       node.lines = line_array
     end
 

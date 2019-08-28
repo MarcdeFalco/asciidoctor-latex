@@ -39,7 +39,7 @@ module TexUtilities
 
   def self.env(env, *args)
     body = args.pop
-    "#{self.begin(env)}#{braces *args}\n#{body}\n#{self.end(env)}\n"
+    "#{self.begin(env)}#{braces *args}\n#{body}\n#{self.end(env)}"
   end
 
   def self.env_opt(env, opt, *args)
@@ -103,7 +103,13 @@ module Asciidoctor
           preamble = IO.read('preamble.tex')
           doc << preamble << "\n "
         else
-          doc << File.open(File.join(LaTeX::DATA_DIR, "preamble_#{self.document.doctype}.tex"), 'r') { |f| f.read }
+          doctype_preamble = "preamble_#{self.document.doctype}.tex"
+          if File.exist? doctype_preamble
+            preamble = IO.read(doctype_preamble)
+            doc << preamble << "\n "
+          else
+            doc << File.open(File.join(LaTeX::DATA_DIR, "preamble_#{self.document.doctype}.tex"), 'r') { |f| f.read }
+          end
         end
         doc << "%% Asciidoc TeX Macros %%\n"
         doc << File.open(File.join(LaTeX::DATA_DIR, 'asciidoc_tex_macros.tex'), 'r') { |f| f.read }
@@ -113,7 +119,7 @@ module Asciidoctor
           macros = IO.read('macros.tex')
           doc << macros
         else
-          # warn "Could not find file macros.tex".yellow
+          warn "Could not find file macros.tex".yellow
         end
         if File.exist?('myEnvironments.tex')
           doc << "\\input myEnvironments.tex\n"
@@ -874,9 +880,19 @@ module Asciidoctor
     def tex_process
       # # warn "This is Asciidoctor::Table, tex_process.  I don't know how to do that".yellow +  " (#{self.node_name})".magenta if $VERBOSE
       # table = Table.new self.parent, self.attributes
+      alignement_array = []
+      self.columns.each do |column, index|
+        case column.attributes['style']
+        when :asciidoc
+          colpcwidth = (column.attributes['colpcwidth']*16)/100
+          alignement_array << "p\{#{colpcwidth}cm\}"
+        else
+          alignement_array << "c"
+        end
+      end
       n_rows = self.rows.body.count
       n_columns = self.columns.count
-      alignment = (['c']*n_columns).join('|')
+      alignment = alignement_array.join('|') #(['c']*n_columns).join('|')
       output = "\\begin\{center\}\n"
       output << "\\begin\{tabular\}\{|#{alignment}|\}\n"
       output << "\\hline\n"
@@ -891,8 +907,8 @@ module Asciidoctor
         end
         output << row_array.join(' & ')
         output << " \\\\ \n"
+        output << "\\hline\n"
       end
-      output << "\\hline\n"
       output << "\\end{tabular}\n"
       output << "\\end{center}\n"
       "#{output}"
