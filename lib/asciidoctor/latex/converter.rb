@@ -260,7 +260,7 @@ module Asciidoctor::LaTeX
     def handle_texmacro node
       node.title = nil
       node.content_model = :simple
-      node.lines = ["\\("] + node.lines + ["\\)\n"]
+      node.lines = ["+++\n\\("] + node.lines + ["\\)\n+++"]
     end
 
     # Example:
@@ -496,6 +496,7 @@ module Asciidoctor::LaTeX
     # These are source file options: for plain asciidoc,
     # asciidoc-manuscript, and asciidoc-latex
     Asciidoctor::Extensions.register do
+
 
       dialect = document.options['dialect'] || document.attributes['dialect'] || 'latex'
 

@@ -6,9 +6,36 @@
 
 % Needed for Asciidoc
 
-\newcommand{\admonition}[2]{\textbf{#1}: {#2}}
-\newcommand{\rolered}[1]{ \textcolor{red}{#1} }
-\newcommand{\roleblue}[1]{ \textcolor{blue}{#1} }
+\usepackage{xstring}
+\usepackage{tikz}
+\usetikzlibrary{calc,decorations.pathmorphing,decorations.shapes,decorations.markings,arrows,chains,matrix,patterns}
+\usepackage[framemethod=tikz]{mdframed}
+\usepackage{fontawesome}
+\mdfdefinestyle{admonitionstyle}{userdefinedwidth=12cm,skipabove=1pt,skipbelow=1pt,innerleftmargin=2pt,linecolor=gray,linewidth=1pt,hidealllines=true,leftline=true,usetwoside=false}
+\newenvironment{admonitionbox}[1]
+{\begin{mdframed}[style=admonitionstyle,%
+    firstextra={\path let \p1=(P), \p2=(O) in ($(\x2,0)!0.5!(0,\y1)$)
+    node[left]{#1};},
+    secondextra={\path let \p1=(P), \p2=(O) in ($(\x2,0)!0.5!(0,\y1)$) node{\phantom{#1}};},
+    singleextra={\path let \p1=(P), \p2=(O) in ($(\x2,0)!0.5!(0,\y1)$)
+    node[minimum width=1.4cm,left]{#1};}]}
+{\end{mdframed}}
+
+\newcommand{\admonitionlabel}[1]{
+    \Huge\IfEqCase{#1}{
+      {NOTE}{\faInfoCircle}
+      {WARNING}{\faWarning}
+      {TIP}{\faLightbulbO}
+    }[\textbf{#1}]
+}
+\newcommand{\admonition}[2]{
+    \begin{admonitionbox}{{\admonitionlabel{#1}}}
+    {#2}
+    \end{admonitionbox}
+}
+
+\providecommand{\rolered}[1]{ \textcolor{red}{#1} }
+\providecommand{\roleblue}[1]{ \textcolor{blue}{#1} }
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{proposition}{Proposition}

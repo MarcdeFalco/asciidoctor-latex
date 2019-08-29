@@ -136,7 +136,7 @@ module Asciidoctor
         # doc << "\n\n\\begin\{document\}\n"
         doc << "\n\n\\begin\{document\}\n"
         doc << "\\maketitle\n"
-        if self.attributes['toc-placement']=="auto"
+        if self.document.doctype=="book"
           doc << "\\tableofcontents\n"
         end
       end
@@ -240,7 +240,7 @@ module Asciidoctor
     def olist_process
       list = "\\begin{enumerate}\n\n"
       self.content.each do |item|
-        list << item.text.macro('item') << "\n\n"
+        list << "\\item #{item.text}\n\n"
         list << item.content
       end
       list << "\\end{enumerate}\n\n"

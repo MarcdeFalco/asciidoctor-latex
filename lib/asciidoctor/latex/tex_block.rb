@@ -102,7 +102,7 @@ module Asciidoctor::LaTeX
 
     # The list of "inner environments" whose enclosing
     # escaped braces are not to be stripped.
-    INNER_TYPES = ["array", "matrix",  "none"]
+    INNER_TYPES = ["cases", "array", "matrix",  "none"]
 
   end
 end

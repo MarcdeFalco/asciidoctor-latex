@@ -25,7 +25,6 @@ module Asciidoctor::LaTeX
       output = output.gsub('ESCUNDERSCORE', '\\_')
       output = output.gsub('ESCDOLLAR', '\\$')
       output = output.gsub('CHEMRIGHTARROW','->').gsub('CHEMLEFTARROW','<-').gsub('CHEMLEFTRIGHTARROW','<-->')
-      output = output.gsub('\\(','$').gsub('\\)','$')
       output = output.gsub('DOUBLEBACKSLASH', '\\\\\\\\')
       output.gsub('!!!BACKSLASH', '\\')
     end
